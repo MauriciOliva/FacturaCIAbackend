@@ -5,16 +5,27 @@ import morgan from "morgan"
 import cors from "cors"
 import helmet from "helmet"
 import facturaRoutes from "../src/ObtenerFactura/factura.routes.js"
+import healthRoutes from "../src/ObtenerFactura/rutas.health.js"
 
 const config = (app)=>{
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use(cors());
+    app.use(cors({
+        origin: [
+            'https://factura-cla-frontend.vercel.app',
+            'http://localhost:3000'
+        ],
+        credentials: true
+    }));
     app.use(helmet());
     app.use(morgan('dev'));
 }
 
 const routes = (app)=>{
+    console.log('Loading health routes...');
+    app.use('/health', healthRoutes);
+    
+    console.log('Loading factura routes...');
     app.use('/v1/api/facturas', facturaRoutes);
 }
 
@@ -23,8 +34,24 @@ export const initServer = ()=>{
     try {
         config(app);
         routes(app);
-        app.listen(process.env.PORT)
-        console.log(`Servidor iniciado en el puerto ${process.env.PORT}`)
+
+        app.get('/', (req, res) => {
+            res.redirect('/health');
+        });
+
+        app.use('*', (req, res) => {
+            res.status(404).json({
+                success: false,
+                message: 'Ruta no encontrada',
+                path: req.originalUrl
+            });
+        });
+
+        const port = process.env.PORT || 3000;
+        app.listen(port, '0.0.0.0', () => {
+            console.log(`✅ Servidor iniciado en el puerto ${port}`);
+            console.log(`🌐 Health check disponible en: http://localhost:${port}/health`);
+        });
     } catch (error) {
         console.error('Server init failed', error);
     }
