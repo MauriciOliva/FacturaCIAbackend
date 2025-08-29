@@ -13,7 +13,8 @@ const config = (app)=>{
     app.use(cors({
         origin: [
             'https://factura-cla-frontend.vercel.app',
-            'http://localhost:3000'
+            'http://localhost:3000',
+            'https://factura-ci-abackend.vercel.app'
         ],
         credentials: true
     }));
