@@ -8,16 +8,26 @@ import facturaRoutes from "../src/ObtenerFactura/factura.routes.js"
 import healthRoutes from "../src/ObtenerFactura/rutas.health.js"
 
 const config = (app)=>{
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.use(cors({
+    const corsOptions = {
         origin: [
             'https://factura-cla-frontend.vercel.app',
             'http://localhost:3000',
             'https://factura-ci-abackend.vercel.app'
         ],
-        credentials: true
-    }));
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        optionsSuccessStatus: 200
+    };
+    
+    // Aplicar CORS para todas las rutas
+    app.use(cors(corsOptions));
+    
+    // Manejar pre-flight requests explícitamente
+    app.options('*', cors(corsOptions));
+    
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
     app.use(helmet());
     app.use(morgan('dev'));
 }
