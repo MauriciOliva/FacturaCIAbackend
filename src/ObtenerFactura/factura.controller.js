@@ -61,14 +61,19 @@ export const getFacturasFiltered = async (req, res) => {
 
 export const getFacturasDetalladas = async (req, res) => {
     try {
+        console.log('📦 Obteniendo facturas detalladas...');
+        
         // Obtener parámetros de filtro de la query string
-        const { NIT, fecha } = req.query;
+        const { nit, fecha } = req.query;
+        
+        console.log('🔍 Filtros recibidos:', { nit, fecha });
         
         // Construir objeto de filtro
         let filtro = {};
         
-        if (NIT) {
-            filtro.NIT = { $regex: NIT, $options: 'i' }; // Búsqueda case insensitive
+        if (nit) {
+            filtro.NIT = { $regex: nit, $options: 'i' };
+            console.log('✅ Filtro NIT aplicado:', nit);
         }
         
         if (fecha) {
@@ -81,12 +86,16 @@ export const getFacturasDetalladas = async (req, res) => {
                 $gte: fechaInicio,
                 $lt: fechaFin
             };
+            console.log('✅ Filtro fecha aplicado:', fecha);
         }
+        
+        console.log('🔍 Filtro final:', filtro);
         
         // Obtener facturas con filtros
         const facturas = await Factura.find(filtro);
+        console.log('✅ Facturas encontradas:', facturas.length);
         
-        // Mapear para obtener solo los campos específicos que necesitas
+        // Mapear para obtener solo los campos específicos
         const facturasDetalladas = facturas.map(factura => ({
             _id: factura._id,
             idCliente: factura.Cliente ? factura.Cliente._id : null,
@@ -98,16 +107,21 @@ export const getFacturasDetalladas = async (req, res) => {
             monto: factura.monto
         }));
         
+        console.log('✅ Facturas procesadas:', facturasDetalladas.length);
+        
         res.status(200).send({
             success: true,
-            message: 'Facturas retrieved successfully with specific fields',
+            message: 'Facturas retrieved successfully',
             data: facturasDetalladas
         });
+        
     } catch (error) {
+        console.error('❌ Error en getFacturasDetalladas:', error);
         return res.status(500).send({
             success: false,
-            message: 'Some error occurred while retrieving the Facturas.',
-            error: error.message
+            message: 'Error interno del servidor',
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }  
 };
