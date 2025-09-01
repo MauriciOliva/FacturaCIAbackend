@@ -9,8 +9,7 @@ const facturaSchema = new Schema({
     NIT:{
         type: String,
         required: true,
-        trim: true,
-        unique: true
+        trim: true
     },
     serie:{
         type: String,
