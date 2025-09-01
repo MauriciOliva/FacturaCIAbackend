@@ -9,32 +9,19 @@ import healthRoutes from "../src/ObtenerFactura/rutas.health.js"
 
 const config = (app)=>{
     const corsOptions = {
-        origin: function (origin, callback) {
-            const allowedOrigins = [
-                'https://factura-cia-frontend.vercel.app',
-                'http://localhost:3000',
-                'https://factura-ci-abackend.vercel.app',
-                'https://factura-cla-frontend.vercel.app' // por si acaso
-            ];
-            
-            // Permitir solicitudes sin origen (como apps móviles o curl)
-            if (!origin) return callback(null, true);
-            
-            if (allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                console.log('Origen bloqueado por CORS:', origin);
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: [
+            'https://factura-cia-frontend.vercel.app', 
+            'http://localhost:3000',
+            'https://factura-ci-abackend.vercel.app'
+        ],
         credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // ✅ Agregar PATCH
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
         optionsSuccessStatus: 200
     };
     
     app.use(cors(corsOptions));
-    app.options('*', cors(corsOptions));
+    app.options('*', cors(corsOptions)); // ✅ Esto es importante para pre-flight
     
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
