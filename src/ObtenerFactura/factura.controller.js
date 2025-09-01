@@ -64,16 +64,18 @@ export const getFacturasDetalladas = async (req, res) => {
         console.log('📦 Obteniendo facturas detalladas...');
         
         // Obtener parámetros de filtro de la query string
-        const { nit, fecha } = req.query;
+        const { NIT, nit, fecha } = req.query; // ✅ Agregar both NIT and nit
         
-        console.log('🔍 Filtros recibidos:', { nit, fecha });
+        console.log('🔍 Filtros recibidos:', { NIT, nit, fecha });
         
         // Construir objeto de filtro
         let filtro = {};
         
-        if (nit) {
-            filtro.NIT = { $regex: nit, $options: 'i' };
-            console.log('✅ Filtro NIT aplicado:', nit);
+        // ✅ Usar NIT (mayúsculas) o nit (minúsculas)
+        const nitFiltro = NIT || nit;
+        if (nitFiltro) {
+            filtro.NIT = { $regex: nitFiltro, $options: 'i' };
+            console.log('✅ Filtro NIT aplicado:', nitFiltro);
         }
         
         if (fecha) {
