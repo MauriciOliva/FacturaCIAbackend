@@ -116,7 +116,6 @@ export const getFacturasDetalladas = async (req, res) => {
             success: false,
             message: 'Error interno del servidor',
             error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }  
 };
