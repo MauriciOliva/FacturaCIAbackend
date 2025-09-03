@@ -63,15 +63,12 @@ export const getFacturasDetalladas = async (req, res) => {
     try {
         console.log('📦 Obteniendo facturas detalladas...');
         
-        // Obtener parámetros de filtro de la query string
-        const { NIT, nit, fecha } = req.query; // ✅ Agregar both NIT and nit
+        const { NIT, nit, fecha } = req.query; 
         
         console.log('🔍 Filtros recibidos:', { NIT, nit, fecha });
         
-        // Construir objeto de filtro
         let filtro = {};
         
-        // ✅ Usar NIT (mayúsculas) o nit (minúsculas)
         const nitFiltro = NIT || nit;
         if (nitFiltro) {
             filtro.NIT = { $regex: nitFiltro, $options: 'i' };
@@ -79,7 +76,6 @@ export const getFacturasDetalladas = async (req, res) => {
         }
         
         if (fecha) {
-            // Convertir la fecha a un rango de todo el día
             const fechaInicio = new Date(fecha);
             const fechaFin = new Date(fecha);
             fechaFin.setDate(fechaFin.getDate() + 1);
@@ -92,12 +88,9 @@ export const getFacturasDetalladas = async (req, res) => {
         }
         
         console.log('🔍 Filtro final:', filtro);
-        
-        // Obtener facturas con filtros
+
         const facturas = await Factura.find(filtro);
         console.log('✅ Facturas encontradas:', facturas.length);
-        
-        // Mapear para obtener solo los campos específicos
         const facturasDetalladas = facturas.map(factura => ({
             _id: factura._id,
             idCliente: factura.Cliente ? factura.Cliente._id : null,

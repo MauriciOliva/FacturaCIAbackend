@@ -34,6 +34,22 @@ const facturaSchema = new Schema({
         type: Date,
         required: true,
     },
+    fechaPago:{
+        type: Date,
+        required: true,
+    },
+    boleta:{
+        type: String,
+        required: true,
+        trim: true,
+    },
+    montoPago:{
+        type: Number,
+        required: true,
+        trim: true,
+        min: 0,
+        max: 1000000000
+    }
 
 })
 
