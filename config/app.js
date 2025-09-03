@@ -5,6 +5,7 @@ import morgan from "morgan"
 import cors from "cors"
 import helmet from "helmet"
 import facturaRoutes from "../src/ObtenerFactura/factura.routes.js"
+import pagoRouter from "../src/PagoFactura/pago.routes.js"
 import healthRoutes from "../src/ObtenerFactura/rutas.health.js"
 
 const config = (app)=>{
@@ -35,6 +36,9 @@ const routes = (app)=>{
     
     console.log('Loading factura routes...');
     app.use('/v1/api/facturas', facturaRoutes);
+
+    console.log('Loading pago routes...');
+    app.use('/v1/api/pagos', pagoRouter);
 }
 
 export const initServer = ()=>{
