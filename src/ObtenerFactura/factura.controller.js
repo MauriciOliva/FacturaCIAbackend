@@ -95,7 +95,7 @@ export const getFacturasDetalladas = async (req, res) => {
             _id: factura._id,
             idCliente: factura.Cliente ? factura.Cliente._id : null,
             NIT: factura.NIT,
-            nombreCliente: factura.NombreCliente,
+            nombreCliente: factura.nombreCliente,
             fecha: factura.fecha,
             serie: factura.serie,
             numeroFactura: factura.numeroFactura,

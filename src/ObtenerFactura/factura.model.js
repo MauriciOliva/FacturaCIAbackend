@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const facturaSchema = new Schema({
-    NombreCliente:{
+    nombreCliente:{
         type: String,
         required: true,
         trim: true,
