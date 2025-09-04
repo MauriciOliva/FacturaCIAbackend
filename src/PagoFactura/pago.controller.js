@@ -73,17 +73,28 @@ export const createPago = async (req, res) => {
 
 export const getPagos = async (req, res) => {
     try {
-        const pagos = await pagoModel.find().populate('facturaId', 'NombreCliente NIT monto');
+        const { NIT, nit } = req.query;
+        let pagos;
+
+        if (NIT || nit) {
+            const nitFiltro = NIT || nit;
+            const facturas = await Factura.find({ NIT: { $regex: nitFiltro, $options: 'i' } }, '_id');
+            const facturaIds = facturas.map(f => f._id);
+
+            pagos = await pagoModel.find({ facturaId: { $in: facturaIds } }).populate('facturaId');
+        } else {
+            pagos = await pagoModel.find().populate('facturaId');
+        }
+
         res.status(200).send({
             success: true,
             message: 'Pagos retrieved successfully',
             data: pagos
         });
-    }
-    catch (error) {
-        return res.status(500).send({
+    } catch (error) {
+        res.status(500).send({
             success: false,
-            message: 'Some error occurred while retrieving the Pagos.',
+            message: 'Error al obtener los pagos',
             error: error.message
         });
     }
